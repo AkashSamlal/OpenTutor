@@ -12,6 +12,13 @@ var courseNums = ['4600','4331','4910','3421'];
 var flag = false;
 var nameList ="";
 
+function getinfo() {
+    axios.get('http://localhost:5000/auth/userinfo').then(() => {
+        console.log("data received!")
+    }).catch(() => {
+        alert("Error retrieving data!");  
+    })
+}
 function populate()
 {
     if(flag == true )
@@ -22,17 +29,6 @@ function populate()
     const list = document.querySelector('.my-list');
 
     const listItems = courseCodes.map((element)=>{'<li id= ${element} class = listItem >${element}</li>'});
-
-/*
-    for(var i = 0; i<courseCodes.length; i++)
-    {
-        var currentClass = courseCodes[i] + courseNums[i];
-        
-        var listClass = document.createElement("li");
-        listClass.innerHTML = ('<li>'+currentClass+'</li>');
-        //document.getElementById("tester").appendChild(listClass);
-    }
-*/
     flag = true;
     return;
 }
@@ -45,12 +41,10 @@ function populate()
 
 function Profile()
 {
-    /*axios.get('http://localhost:5000/auth/userinfo').then(() => {
-        console.log("data received!")
-    }).catch(() => {
-        alert("Error retrieving data!");  
-    })*/
+    
+    /*componentDidMount = () => {
 
+    };*/
     return(
         <div id="Profileinformation">
            
