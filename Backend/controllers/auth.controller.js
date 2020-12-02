@@ -359,11 +359,23 @@ exports.getUserInfo = async function(req, res) {
     console.log("School: " + schoolName);
     console.log("Email: " + email);
 
-    Courses.find({ }).exec((err, courses) => {
+   /* Courses.find({ }).exec((err, courses) => {
         let course = courses[0].listCourse;
         return res.json({ firstName, lastName, schoolName, email, course}); 
 
+    })*/
+
+    Courses.findOne({user: UserInfo._id}).exec((err, crse) => {
+        let courses = crse.listCourse; 
+        if(!courses) {
+            console.log("No course exist w/ user");
+            return res.status(400).json({error: "No course exist w/ user"});
+        }
+        console.log(courses); 
+        return res.json({ firstName, lastName, schoolName, email, courses}); 
+
     })
+
     //let idk = res.user;
     //return res.json({ idk});
 }

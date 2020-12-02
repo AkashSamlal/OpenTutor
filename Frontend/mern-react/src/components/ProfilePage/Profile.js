@@ -22,8 +22,8 @@ function populate()
     }
     
     const list = document.querySelector('.my-list');
-
     const listItems = courseCodes.map((element)=>{'<li id= ${element} class = listItem >${element}</li>'});
+    //const listItems = courseCodes.map((element)=>{'<li id= ${element} class =this.state.courses>${element}</li>'});
     flag = true;
     return;
 }
@@ -50,7 +50,7 @@ function populate()
           const resLast = await res.data.lastName;
           const resSchool = await res.data.schoolName;
           const resEmail = await res.data.email;
-          const resCourses = await res.data.course; 
+          const resCourses = await res.data.courses; 
 
           this.setState(idk => ({
               firstName: idk.firstName = resFirst,
@@ -104,9 +104,8 @@ function populate()
             <br />
 
                 <ul class = "my-list" title = "Courses"> 
-              <li> {this.state.courses}</li>
-                    {populate()}
-                </ul>
+                <li> {this.state.courses} </li>               
+                 </ul>
            
 
             <br />
