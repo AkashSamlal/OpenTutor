@@ -1,24 +1,19 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import './Profile.css';
 import download from './download.png';
-const axios = require('axios');
+import axios from 'axios';
 
-var dummyFname = 'Jon';
-var dummyLname = 'Snow';
-var dummySchool = 'Nights Watch';
-var dummyEmail = 'jonsnow@gmail.com';
+var dummyFname; 
+var dummyLname; 
+var dummySchool; 
+var dummyEmail;
+
 var courseCodes = ['COP','COP','CIS','EEL'];
 var courseNums = ['4600','4331','4910','3421'];
 var flag = false;
 var nameList ="";
 
-function getinfo() {
-    axios.get('http://localhost:5000/auth/userinfo').then(() => {
-        console.log("data received!")
-    }).catch(() => {
-        alert("Error retrieving data!");  
-    })
-}
+
 function populate()
 {
     if(flag == true )
@@ -39,12 +34,18 @@ function populate()
         //alert("Shmoovin to profile page");
     };
 
-function Profile()
-{
-    
-    /*componentDidMount = () => {
+function Profile() {
+    axios.get('http://localhost:5000/auth/userinfo', { headers: {Authorization: localStorage.getItem('jwtToken')}})
+        .then((response) => {
+           const { firstName, lastName, schoolName, email } = response.data;
+           //const { idk } = response.data; 
+            //console.log("Object: " + idk);
+            return response; 
+        }).catch(() => {
+            alert("Error retrieving data!");  
+        })
 
-    };*/
+        
     return(
         <div id="Profileinformation">
            

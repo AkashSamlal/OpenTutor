@@ -20,6 +20,7 @@ function Home () {
     const profileProcess = async event =>
     {
         event.preventDefault();
+
         window.location.href = "/ProfilePage"; 
         //alert("Shmoovin to profile page");
     };
@@ -28,6 +29,7 @@ function Home () {
     {
         event.preventDefault();
         //alert("Logging out");
+        window.localStorage.clear(); 
         window.location.href = '/SigninPage';
     };
     const deleteCardProcess = async event =>

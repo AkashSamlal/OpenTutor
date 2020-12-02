@@ -24,6 +24,8 @@ function Signin()
         {
             axios.post('http://localhost:5000/auth/signin', req)
             .then(function(resp) {
+                const { accessToken } = resp.data;
+                localStorage.setItem('jwtToken', accessToken);
                 const status = resp.status; 
                 if(status == 200)
                      window.location = '/HomePage';
@@ -31,7 +33,8 @@ function Signin()
                 .catch(err => {
                     console.log(err); 
                 })
-
+                
+                axios.defaults.headers.common['Authorization'] = "Bearer " + localStorage.getItem('jwtToken');
             //alert('signing in ' + signinEmail.value + ' ' + signinPassword.value);
         }
         else if (state.button === 2)
