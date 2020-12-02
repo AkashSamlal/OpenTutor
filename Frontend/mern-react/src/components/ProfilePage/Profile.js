@@ -41,7 +41,8 @@ function populate()
             firstName: '',
             lastName: '',
             schoolName: '',
-            email: ''
+            email: '',
+            courses: []
         }
       async  componentDidMount() {
           const res = await axios.get('http://localhost:5000/auth/userinfo', { headers: {Authorization: localStorage.getItem('jwtToken')}});
@@ -49,13 +50,14 @@ function populate()
           const resLast = await res.data.lastName;
           const resSchool = await res.data.schoolName;
           const resEmail = await res.data.email;
-
+          const resCourses = await res.data.course; 
 
           this.setState(idk => ({
               firstName: idk.firstName = resFirst,
               lastName: idk.lastName = resLast,
               schoolName: idk.schoolName = resSchool,
-              email: idk.email = resEmail
+              email: idk.email = resEmail,
+              courses: idk.courses = resCourses
           }))
           /* axios.get('http://localhost:5000/auth/userinfo', { headers: {Authorization: localStorage.getItem('jwtToken')}})
             .then((response) => {
@@ -102,7 +104,7 @@ function populate()
             <br />
 
                 <ul class = "my-list" title = "Courses"> 
-                <li>COP 4600</li>
+              <li> {this.state.courses}</li>
                     {populate()}
                 </ul>
            

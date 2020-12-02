@@ -352,14 +352,20 @@ exports.getUserInfo = async function(req, res) {
     const lastName = UserInfo.lastName;
     const schoolName = UserInfo.schoolName;
     const email = UserInfo.email; 
-    
+     
+
     console.log("First Name: " + firstName);
     console.log("Last Name: " + lastName);
     console.log("School: " + schoolName);
     console.log("Email: " + email);
+
+    Courses.find({ }).exec((err, courses) => {
+        let course = courses[0].listCourse;
+        return res.json({ firstName, lastName, schoolName, email, course}); 
+
+    })
     //let idk = res.user;
     //return res.json({ idk});
-    return res.json({ firstName, lastName, schoolName, email}); 
 }
     /* User.find({ }).then((data) => {
         console.log("User: " + data[0].firstName); 
