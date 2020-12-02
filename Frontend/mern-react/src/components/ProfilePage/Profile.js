@@ -34,18 +34,43 @@ function populate()
         //alert("Shmoovin to profile page");
     };
 
-function Profile() {
-    axios.get('http://localhost:5000/auth/userinfo', { headers: {Authorization: localStorage.getItem('jwtToken')}})
-        .then((response) => {
-           const { firstName, lastName, schoolName, email } = response.data;
-           //const { idk } = response.data; 
-            //console.log("Object: " + idk);
-            return response; 
-        }).catch(() => {
-            alert("Error retrieving data!");  
-        })
+//function Profile() {
+    class Profile extends Component {
 
-        
+        state = {
+            firstName: '',
+            lastName: '',
+            schoolName: '',
+            email: ''
+        }
+      async  componentDidMount() {
+          const res = await axios.get('http://localhost:5000/auth/userinfo', { headers: {Authorization: localStorage.getItem('jwtToken')}});
+          const resFirst = await res.data.firstName;
+          const resLast = await res.data.lastName;
+          const resSchool = await res.data.schoolName;
+          const resEmail = await res.data.email;
+
+
+          this.setState(idk => ({
+              firstName: idk.firstName = resFirst,
+              lastName: idk.lastName = resLast,
+              schoolName: idk.schoolName = resSchool,
+              email: idk.email = resEmail
+          }))
+          /* axios.get('http://localhost:5000/auth/userinfo', { headers: {Authorization: localStorage.getItem('jwtToken')}})
+            .then((response) => {
+               const { firstName, lastName, schoolName, email } = response.data;
+               //const { idk } = response.data; 
+                //console.log("Object: " + idk);
+                console.log(firstName); 
+                return response; 
+            }).catch(() => {
+                alert("Error retrieving data!");  
+            })*/
+
+        }
+
+    render() {
     return(
         <div id="Profileinformation">
            
@@ -60,13 +85,13 @@ function Profile() {
             
         <div id = "bottominfo">
             
-            <lable id = 'FirstyNamey'>First Name: {dummyFname}</lable>
+            <lable id = 'FirstyNamey'>First Name: {this.state.firstName}</lable>
             <br />
-            <lable id = 'lastName'>Last Name: {dummyLname}</lable>
+            <lable id = 'lastName'>Last Name: {this.state.lastName}</lable>
             <br />
-            <lable id = 'schoolName'>School: {dummySchool}</lable>
+            <lable id = 'schoolName'>School: {this.state.schoolName}</lable>
             <br/>
-            <lable id = 'tempEmail'>Email: {dummyEmail}</lable>
+            <lable id = 'tempEmail'>Email: {this.state.email}</lable>
         </div>
         <br/>
 
@@ -97,5 +122,6 @@ function Profile() {
             </form>
         </div>
     );
+}
 };
 export default Profile;
