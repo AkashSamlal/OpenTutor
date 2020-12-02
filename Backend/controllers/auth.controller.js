@@ -84,7 +84,7 @@ exports.requestPassword = async function(req, res) {
             subject: 'TutorMaster | Reset Password',
             html: ` 
                  <h2>Hello, you request for a password change, click on link below to change password:</h2>
-                 <p>${CLIENT_URL}/reset-password/${token}</p>
+                 Click <a href=${CLIENT_URL}/reset-password/${token}> here</a> to change password
                  `
         };
 
