@@ -10,6 +10,8 @@ import CourseSetupPage from './pages/CourseSetupPage';
 import ScheduleBuilderPage from './pages/ScheduleBuilderPage';
 import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
+import SearchPage from './pages/SearchPage';
+import TutorProfilePage from './pages/TutorProfilePage';
 
 function App() {
   
@@ -25,6 +27,8 @@ function App() {
         <Route path="/ScheduleBuildPage" exact><ScheduleBuilderPage /></Route>
         <Route path="/HomePage" exact><HomePage /></Route>
         <Route path ="/ProfilePage" exact><ProfilePage/></Route>
+        <Route path ="/TutorProfilePage" exact><TutorProfilePage/></Route>
+        <Route path="/SearchPage" exact><SearchPage /></Route>
         <Redirect to="/SignupPage" />
       </Switch>
     </Router>

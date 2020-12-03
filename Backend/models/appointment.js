@@ -8,6 +8,10 @@ const appointmentSchema = new mongoose.Schema({
     student: String,
     time: String,
     rating : Number,
+    availability: {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Availability'
+    }, 
 });
 
 module.exports = mongoose.model('Appointment', appointmentSchema);
