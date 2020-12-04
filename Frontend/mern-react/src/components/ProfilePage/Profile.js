@@ -18,6 +18,7 @@ var bioFromAPI = 'hard coded string but once we get the API just set this equal 
 
 var isOpen = false; 
 var isOpen2 = false;
+var count;
 
 const classes = [
     {class: 'COP 4600'},
@@ -46,17 +47,13 @@ function populate()
         //alert("Shmoovin to profile page");
     };
 
-function handleDeleteClick()
-{
-    alert("this works");
 
-    return;
-}
 
 function BringUpEdit()
 {
     var temp = document.getElementById("setupForm").style.display ="none";
     var temp = document.getElementById("editClassForm").style.display ="inline-block";
+    count = 0;
 
 }
 
@@ -66,95 +63,121 @@ function BringUpPass()
     var temp = document.getElementById("editPassform").style.display ="inline-block";
 }
 
-function BacktoProfile()
+function BringUpBio()
 {
-     var temp = document.getElementById("editClassForm").style.display ="none";
-     var temp = document.getElementById("setupForm").style.display = "inline-block";
+    var temp = document.getElementById("setupForm").style.display ="none";
+    var temp = document.getElementById("editBioform").style.display ="inline-block";
 }
 
-function BacktoProfile2()
+function BacktoProfileClass()
+{
+    var temp = document.getElementById("editClassForm").style.display ="none";
+    var temp = document.getElementById("setupForm").style.display = "inline-block";
+}
+
+function BacktoProfilePass()
 {
     var temp = document.getElementById("editPassform").style.display ="none";
+    var temp = document.getElementById("setupForm").style.display = "inline-block";
+}
+
+function BacktoProfileBio()
+{
+    var temp = document.getElementById("editBioform").style.display ="none";
     var temp = document.getElementById("setupForm").style.display = "inline-block";
 }
 
 function addclasses()
 {
     var newdiv = document.createElement('span');
-    newdiv.innerHTML = ('<span id= "inner-title"><input type= "text" id="styleText" defaultValue = {thisclass.class} ></input><button id="buttonstyling3">X</button></span>');
-
+    count++;
+    newdiv.innerHTML = ('<span id= "inner-title"><div id = class"'+(count)+'"><text id ="testhis">Class '+(count+1)+':</text><input type= "text" id="styleText" placeholder = "ex. COP 4331" ></input></div></span>');
     document.getElementById("endOfthis").appendChild(newdiv);
     return;
 };
 
-function removeclasses()
-{
-    this.setState({isDisplayed: false});
-}
-
-const togglePopup = () =>
-{
-
-    if(!isOpen) {
-        isOpen = true; 
-    }else {
-        isOpen = false; 
+const submitnewBio = async event => {
+     try {
+        var oo = document.getElementById("boxbio").value; 
+    } catch(err) {
+        console.log("Error: " + err);
     }
-   // setIsOpen(!isOpen);
-
+    axios.post('http://localhost:5000/auth/bioBox', {oo}, { headers: {Authorization: localStorage.getItem('jwtToken')}})
+        .then(function(resp) {
+            console.log(resp);
+            if(resp.status == 200) {
+                BacktoProfileBio();
+            } 
+        })
+            .catch(err => {
+                console.log(err); 
+            })
 }
-
-const  togglePopup2 = () =>
-{
-    if(!isOpen) {
-        isOpen = true; 
-    }else {
-        isOpen = false; 
-    }
-  //setIsOpen2(!isOpen);
-}
-
-const  saveBioChange= async event =>
-{
-    //event.preventDefault();
-    alert("Send new bio to database");
-}
-
 const  submitnewPass = async event =>
 {
     var pass1 = document.getElementById("newPass").value;
     var pass2 = document.getElementById("confirmNewPass").value;
 
     if(pass1 != pass2)
-        alert("password not matching");
+        alert("Password Not Matching");
 
-    else
-        alert("they match");
+    else {
+        axios.post('http://localhost:5000/auth/changePassword', {pass1}, { headers: {Authorization: localStorage.getItem('jwtToken')}})
+        .then(function(resp) {
+            console.log(resp);
+            if(resp.status == 200) {
+                BacktoProfilePass();
+            } 
+        })
+            .catch(err => {
+                console.log(err); 
+            })
+    }
 }
 
-const  submitnewEmail = async event =>
+function submitNewClasses()
 {
-    var email1 = document.getElementById("newEmail").value;
-    var email2 = document.getElementById("confirmNewEmail").value;
+   /* for(let i = 0; i < count; i++) {
+        alert(document.getElementById("classesListEdit").elements[i].value);
+        console.log(document.getElementById("classesListEdit").elements[i].value);
+    }*/
+    
+    /*let courses = []; 
 
-    if(email1 != email2)
-        alert("password not matching");
+        for(let i = 0; i < count; i++) {
+            courses[i] = document.getElementById("class"+i).value;
+        }
+        
+        alert(courses); 
+        console.log(courses); 
+        */
 
-    else
-        alert("they match");
+    /*axios.post('http://localhost:5000/auth/addCourses', {oo}, { headers: {Authorization: localStorage.getItem('jwtToken')}})
+        .then(function(resp) {
+            console.log(resp);
+            if(resp.status == 200) {
+                BacktoProfileBio();
+            } 
+        })
+            .catch(err => {
+                console.log(err); 
+            })*/
 
 }
+
+
 //function Profile()
 class Profile extends Component 
 {
-    state = {
-        firstName: '',
-        lastName: '',
-        schoolName: '',
-        email: '',
-        courses: [],
-        bioBox: ''
-    }
+        state = {
+            firstName: '',
+            lastName: '',
+            schoolName: '',
+            email: '',
+            courses: [],
+            bioBox: ''
+        }
+    
 
     async  componentDidMount() {
         const res = await axios.get('http://localhost:5000/auth/userinfo', { headers: {Authorization: localStorage.getItem('jwtToken')}});
@@ -163,25 +186,19 @@ class Profile extends Component
         const resSchool = await res.data.schoolName;
         const resEmail = await res.data.email;
         const resCourses = await res.data.courses; 
-        const resBioBox = await res.data.bioBox; 
+        let resBioBox = await res.data.bioBox; 
+
 
         this.setState(idk => ({
-            firstName: idk.firstName = resFirst,
-            lastName: idk.lastName = resLast,
-            schoolName: idk.schoolName = resSchool,
-            email: idk.email = resEmail,
-            courses: idk.courses = resCourses,
-            bioBox: idk.bioBox = resBioBox
-        }))
-      }
+              firstName: idk.firstName = resFirst,
+              lastName: idk.lastName = resLast,
+              schoolName: idk.schoolName = resSchool,
+              email: idk.email = resEmail,
+              courses: idk.courses = resCourses,
+              bioBox: idk.bioBox = resBioBox
+        })) 
+    }
 
-    //const [isOpen, setIsOpen] = useState(false);
-    //const [isOpen2, setIsOpen2] = useState(false);
-       
-
-   
-    
-    
     render() {
     return(
         <div id="Profileinformation">
@@ -213,12 +230,9 @@ class Profile extends Component
 
             <br />
 
-                <ul class = "my-list" title = "Courses"> 
-                <li>{this.state.courses}</li>
-                </ul>
-           
 
-            <br />
+                {this.state.courses.map(thisclass => (<div id = "classesListEdit"><p>{thisclass}</p></div>))}
+
 
         </div>
 
@@ -228,17 +242,16 @@ class Profile extends Component
 
                 <span id ="CoursesLable">Bio:</span>
                 <br/>
-                <textarea value={this.state.bioBox}></textarea>
-                <input type = "button" id="saveNewBio" class="buttons" value="Save Changes" onClick={saveBioChange}/>
+                <br/>
+                <text>{this.state.bioBox}</text>
+                <br/>
+                <br/>
 
             </div>
 
 
-
-
-
             <input id = "buttonstyling" type = "button" value = "Update password" onClick={BringUpPass}/>
-
+            <input id = "buttonstyling" type = "button" value = "Update Bio" onClick={BringUpBio}/>
 
 
             <input id = "buttonstyling" type = "button" value = "Edit Classes" onClick = {BringUpEdit}/>
@@ -250,21 +263,28 @@ class Profile extends Component
             </form>
 
             <form id = "editClassForm">
-            Edit Courses
-            <br />
-            <br />
-            <br />
-            <div id = "courseEditList">
+                Edit Courses
+                <br />
+                <br />
+                <br />
+                <div id = "courseEditList">
 
-                {classes.map(thisclass => (<div id = "classesListEdit"><input type= "text" id="styleText" defaultValue = {thisclass.class} ></input>
-                                             <button id="buttonstyling3" onClick={removeclasses}>X</button></div>))}
-                                             <div id ="endOfthis"></div>
-            </div>
-            
-            <input type = "button" id = "buttonstyling2" value = "Add Slot" onClick = {addclasses} />
-            <br/>
-            <input type = "button" id = "buttonstyling2" value = "Submit Changes" onClick = {BacktoProfile} />
-            <input type = "button" id = "buttonstyling2" value = "Cancel" onClick = {BacktoProfile} />
+            <div id = "classesListEdit">
+                <div id = "class0">
+                </div> 
+                <text id ="testhis">Class 1:</text>
+                <input type= "text" id="styleText" placeholder = "ex. COP 4331"></input>
+                
+                </div>
+
+                <div id ="endOfthis"></div>
+                </div>
+                
+                <input type = "button" id = "buttonstyling2" value = "Add Slot" onClick = {addclasses} />
+                
+                <br/>
+                <input type = "button" id = "buttonstyling2" value = "Submit Changes" onClick ={submitNewClasses}/>
+                <input type = "button" id = "buttonstyling2" value = "Cancel" onClick = {BacktoProfileClass} />
 
 
             </form>
@@ -279,10 +299,19 @@ class Profile extends Component
                 
                 <br/>
                 <input type = "button" id = "buttonstyling2" value = "Submit" onClick = {submitnewPass} />
-                <input type = "button" id = "buttonstyling2" value = "Cancel" onClick = {BacktoProfile2} />
-
-
+                <input type = "button" id = "buttonstyling2" value = "Cancel" onClick = {BacktoProfilePass} />
             </form>
+
+            <form id = "editBioform">
+                Update Bio
+                <br/>
+                <br/>
+                <input id="boxbio" placeholder = "Bio, tell us a bit about your self"/>
+                <br/>
+                <input type = "button" id = "buttonstyling2" value = "Submit" onClick = {submitnewBio} />
+                <input type = "button" id = "buttonstyling2" value = "Cancel" onClick = {BacktoProfileBio} />
+            </form>
+
         </div>
 
         );

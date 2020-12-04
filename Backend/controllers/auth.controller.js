@@ -232,7 +232,6 @@ exports.activateAccount = async(req, res, next) => {
 //Extract reference from current user and update array on the dataset 
 exports.authenticateToken = function(req, res, next) {
     const token = req.headers['authorization']; 
-    //const token = authHeader && authHeader.split(' ')[1]; 
     if(!token) {
         console.log("No token exists!"); //Boot to signup page
         return res.sendStatus(401); 
@@ -278,72 +277,6 @@ exports.courseSetup =  async function (req, res) {
             return res.sendStatus(202); 
         }
     })
-
-        //This is an API for updating the user courses
-        /*
-        We need to search through if exist
-        Grab the updated amount of courses
-        let s =  await Courses.findOneAndUpdate({user: UserInfo._id}, {$push:{listCourse: courses}} , { upsert: true, new: true, returnNewDocument: true }); 
-        try {
-            console.log(s); 
-            await s.save(); 
-        } catch( err ) {
-            console.log("Some bullshit error: " + err); 
-        }*/
-
-        /*Courses.findOne({listCourse: courses}).exec((err, crse) => {
-            if(crse) {
-                console.log("Course exists w/ user");
-                return res.status(400).json({error: "Course exists w/ user"});
-            }
-            const userCourses = new Courses({
-                listCourse: courses, 
-                count: count,
-                user: UserInfo._id
-            });
-            userCourses.save(function(err) {
-                if(err){
-                    console.log("Error: " + err);
-                }  
-                console.log("Courses Added!"); 
-            })
-            if(UserInfo.isTutor) {
-                return res.sendStatus(201);
-            }
-            else if(UserInfo.isStudent) {
-                return res.sendStatus(202); 
-            }
-        })*/
-    //1. Search through list of courses from user and see if it already exists
-        //1a. If the course exists: Result "Course already added"
-         //1b. If not: Result "Save the Course to the User " 
-
-            //Create a list of courses 
-         /*   const userCourses = new Courses({
-                listCourse: courses, 
-                count: count,
-                user: newUser.id
-            });
-            
-            //Save it to database 
-            userCourses.save(function(err) {
-                if(err) console.log(err); 
-                return res.status(200).json("Adding Courses success!");
-            })*/
-
-             
-             /*Prints the contents of the users collection:
-        mongoose.connection.db.collection("users", function (err, collection) {
-            collection.find({}).toArray(function(err, data){
-                console.log(data); // it will print your collection data
-            })   
-        });*/
-        
-        /*Prints all collections:
-        mongoose.connection.db.listCollections().toArray(function (err, names) {
-            console.log(names); // [{ name: 'dbname.myCollection' }]
-            module.exports.Collection = names;
-        });*/
 }
 //For profile page info
 exports.getUserInfo = async function(req, res) {  
@@ -353,20 +286,14 @@ exports.getUserInfo = async function(req, res) {
     const lastName = UserInfo.lastName;
     const schoolName = UserInfo.schoolName;
     const email = UserInfo.email; 
-    const bioBox = UserInfo.bioBox;
+    //const bioBox = UserInfo.bioBox;
 
     console.log("First Name: " + firstName);
     console.log("Last Name: " + lastName);
     console.log("School: " + schoolName);
     console.log("Email: " + email);
-    console.log("BioBox: " + bioBox);
 
-   /* Courses.find({ }).exec((err, courses) => {
-        let course = courses[0].listCourse;
-        return res.json({ firstName, lastName, schoolName, email, course}); 
-
-    })*/
-
+    //Display list of courses
     Courses.findOne({user: UserInfo._id}).exec((err, crse) => {
         let courses = crse.listCourse; 
         if(!courses) {
@@ -374,26 +301,86 @@ exports.getUserInfo = async function(req, res) {
             return res.status(400).json({error: "No course exist w/ user"});
         }
         console.log(courses); 
-        return res.json({ firstName, lastName, schoolName, email, courses, bioBox}); 
 
+        User.findOne({_id: UserInfo._id}).exec((err, bio) => {
+            let bioBox = bio.bioBox;
+            console.log(bioBox); 
+
+            return res.json({ firstName, lastName, schoolName, email, courses, bioBox}); 
+        })
     })
 
-    //let idk = res.user;
-    //return res.json({ idk});
+    
+
 }
-    /* User.find({ }).then((data) => {
-        console.log("User: " + data[0].firstName); 
-       return res.json(data); 
-    }).catch((error) => {
-        console.log("Error: " + error);
+
+exports.modifyBioBox = async function(req, res) {
+    const UserInfo = req.user.user; 
+    const { oo } = req.body; 
+    console.log("New Bio Box: " + oo);
+    User.findByIdAndUpdate(UserInfo._id, {
+        $set: {
+            bioBox: oo
+        }
+    },
+    function(err, success) {
+         if(err) {
+             console.log("Error in changing bio box: ", err);
+             return res.status(400).json({error: 'Error in bio box'})
+        }
+         console.log("BioBox Updated!");
+        return res.status(200).json("BioBox Updated"); 
     });
+}
 
-    Courses.find({ }).then((data) => {
-        console.log("Courses: " + data); 
-       return res.json(data); 
-    }).catch((error) => {
-        console.log("Error: " + error);
-    });*/
+exports.changePassword = async function(req, res) {
+    const UserInfo = req.user.user; 
+    const { pass1 } = req.body; 
+    const email  = UserInfo.email;  
+    console.log("Password: " + pass1); 
+    console.log(email); 
+         User.findOne({email}).exec((err, user) => {
+            if(!user) {
+                console.log("User doesn't exists");
+                return res.status(400).json({error: "User doesn't exists"});
+            }            
+            //Hash the password into DB
+            bcrypt.genSalt(10, function(err, salt) {
+                bcrypt.hash(pass1, salt, function(err, hash) {
+                    User.findByIdAndUpdate(UserInfo._id, {
+                            $set: {
+                                password: hash
+                            }
+                        },
+                    function(err, success) {
+                        if(err) {
+                          console.log("Error in changing passwords: ", err);
+                          return res.status(400).json({error: 'Error in changing passwords'})
+                        }
+                         console.log("Password Updated!");
+                        return res.status(200).json("Password Changed Successs"); 
+                    });
+               });
+            });
+        });
+}
 
+exports.addCourses = async function(req, res) {
+    const UserInfo = req.user.user; 
+    const { courses } = req.body; 
 
+    Courses.findByIdAndUpdate({user: UserInfo._id}, {
+        $set: {
+            listCourse: courses
+        }
+    },
+    function(err, success) {
+         if(err) {
+             console.log("Error in adding courses: ", err);
+             return res.status(400).json({error: 'Error in adding courses'})
+        }
+         console.log("Adding Courses Updated!");
+        return res.status(200).json("Adding Courses Updated"); 
+    });
+}
        
