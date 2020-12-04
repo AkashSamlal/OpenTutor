@@ -41,13 +41,15 @@ function populate()
     return;
 }
 
-    const GoHome = async event => {
+const GoHome = async event => {
         event.preventDefault();
         window.location.href = "/HomePage"; 
         //alert("Shmoovin to profile page");
-    };
+};
 
-
+function toUpper(x) {
+    return x.toUpperCase();
+}; 
 
 function BringUpEdit()
 {
@@ -91,28 +93,30 @@ function addclasses()
 {
     var newdiv = document.createElement('span');
     count++;
-    newdiv.innerHTML = ('<span id= "inner-title"><div id = class"'+(count)+'"><text id ="testhis">Class '+(count+1)+':</text><input type= "text" id="styleText" placeholder = "ex. COP 4331" ></input></div></span>');
+    newdiv.innerHTML = ('<span id= "inner-title"><div id = "class'+(count)+'"><text id ="testhis">Class '+(count+1)+':</text><input type= "text" id="styleText" placeholder = "ex. COP 4331" ></input></div></span>');
+
     document.getElementById("endOfthis").appendChild(newdiv);
     return;
 };
 
 const submitnewBio = async event => {
-     try {
-        var oo = document.getElementById("boxbio").value; 
-    } catch(err) {
-        console.log("Error: " + err);
-    }
-    axios.post('http://localhost:5000/auth/bioBox', {oo}, { headers: {Authorization: localStorage.getItem('jwtToken')}})
-        .then(function(resp) {
-            console.log(resp);
-            if(resp.status == 200) {
-                BacktoProfileBio();
-            } 
-        })
-            .catch(err => {
-                console.log(err); 
-            })
+    try {
+       var oo = document.getElementById("boxbio").value; 
+   } catch(err) {
+       console.log("Error: " + err);
+   }
+   axios.post('http://localhost:5000/auth/bioBox', {oo}, { headers: {Authorization: localStorage.getItem('jwtToken')}})
+       .then(function(resp) {
+           console.log(resp);
+           if(resp.status == 200) {
+               BacktoProfileBio();
+           } 
+       })
+           .catch(err => {
+               console.log(err); 
+           })
 }
+
 const  submitnewPass = async event =>
 {
     var pass1 = document.getElementById("newPass").value;
@@ -137,47 +141,42 @@ const  submitnewPass = async event =>
 
 function submitNewClasses()
 {
-   /* for(let i = 0; i < count; i++) {
-        alert(document.getElementById("classesListEdit").elements[i].value);
-        console.log(document.getElementById("classesListEdit").elements[i].value);
-    }*/
-    
-    /*let courses = []; 
+    var courseArray = [];
 
-        for(let i = 0; i < count; i++) {
-            courses[i] = document.getElementById("class"+i).value;
-        }
-        
-        alert(courses); 
-        console.log(courses); 
-        */
+    for (var i = 0; i<=count; i++) {
+        courseArray[i] = document.getElementById("class"+i).getElementsByTagName("input")[0].value;
+    }
+    courseArray = courseArray.map(toUpper); 
 
-    /*axios.post('http://localhost:5000/auth/addCourses', {oo}, { headers: {Authorization: localStorage.getItem('jwtToken')}})
-        .then(function(resp) {
-            console.log(resp);
-            if(resp.status == 200) {
-                BacktoProfileBio();
-            } 
-        })
-            .catch(err => {
-                console.log(err); 
-            })*/
+    let req = {
+        courses: courseArray,
+        count: count 
+    }
 
+    axios.post('http://localhost:5000/auth/addCourses', req, { headers: {Authorization: localStorage.getItem('jwtToken')}})
+       .then(function(resp) {
+           console.log(resp);
+           if(resp.status == 200) {
+               BacktoProfileClass();
+           } 
+       })
+           .catch(err => {
+               console.log(err); 
+           })
 }
 
 
 //function Profile()
 class Profile extends Component 
 {
-        state = {
-            firstName: '',
-            lastName: '',
-            schoolName: '',
-            email: '',
-            courses: [],
-            bioBox: ''
-        }
-    
+    state = {
+        firstName: '',
+        lastName: '',
+        schoolName: '',
+        email: '',
+        courses: [],
+        bioBox: ''
+    }
 
     async  componentDidMount() {
         const res = await axios.get('http://localhost:5000/auth/userinfo', { headers: {Authorization: localStorage.getItem('jwtToken')}});
@@ -187,7 +186,6 @@ class Profile extends Component
         const resEmail = await res.data.email;
         const resCourses = await res.data.courses; 
         let resBioBox = await res.data.bioBox; 
-
 
         this.setState(idk => ({
               firstName: idk.firstName = resFirst,
@@ -249,7 +247,6 @@ class Profile extends Component
 
             </div>
 
-
             <input id = "buttonstyling" type = "button" value = "Update password" onClick={BringUpPass}/>
             <input id = "buttonstyling" type = "button" value = "Update Bio" onClick={BringUpBio}/>
 
@@ -269,13 +266,7 @@ class Profile extends Component
                 <br />
                 <div id = "courseEditList">
 
-            <div id = "classesListEdit">
-                <div id = "class0">
-                </div> 
-                <text id ="testhis">Class 1:</text>
-                <input type= "text" id="styleText" placeholder = "ex. COP 4331"></input>
-                
-                </div>
+            <div id = "classesListEdit"><div id = "class0"><text id ="testhis">Class 1:</text><input type= "text" id="styleText" placeholder = "ex. COP 4331"></input></div></div>
 
                 <div id ="endOfthis"></div>
                 </div>
@@ -306,7 +297,7 @@ class Profile extends Component
                 Update Bio
                 <br/>
                 <br/>
-                <input id="boxbio" placeholder = "Bio, tell us a bit about your self"/>
+                <input id="boxbio" placeholder = "Bio, tell us a bit about your self" ></input>               
                 <br/>
                 <input type = "button" id = "buttonstyling2" value = "Submit" onClick = {submitnewBio} />
                 <input type = "button" id = "buttonstyling2" value = "Cancel" onClick = {BacktoProfileBio} />

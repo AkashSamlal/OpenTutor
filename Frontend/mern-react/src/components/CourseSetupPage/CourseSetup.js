@@ -37,7 +37,7 @@ function CourseSetup()
         return;
     };
 
-     function toUpper(x) {
+    function toUpper(x) {
         return x.toUpperCase();
     }; 
 

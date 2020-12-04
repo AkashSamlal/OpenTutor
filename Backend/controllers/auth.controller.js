@@ -126,8 +126,8 @@ exports.resetPassword = async function(req, res) {
                         },
                         function(err, success) {
                         if(err) {
-                          console.log("Error in signup while account activation: ", err);
-                          return res.status(400), json({error: 'Error activating account'})
+                          console.log("Error in Changing Password: ", err);
+                          return res.status(400), json({error: 'Error Changing Password'})
                         }
                         res.json({ message: "Password Updated!" });
                          console.log("Password Updated!");
@@ -367,16 +367,20 @@ exports.changePassword = async function(req, res) {
 
 exports.addCourses = async function(req, res) {
     const UserInfo = req.user.user; 
-    const { courses } = req.body; 
-
-    Courses.findByIdAndUpdate({user: UserInfo._id}, {
+    const { courses, count } = req.body; 
+    console.log(courses);
+    Courses.findOneAndUpdate({user: UserInfo._id}, {
         $set: {
-            listCourse: courses
+            listCourse: courses,
+            count: count
         }
     },
     function(err, success) {
+        console.log("User info ID: " + UserInfo._id); 
+
          if(err) {
-             console.log("Error in adding courses: ", err);
+             console.log(success)
+             console.log("Error in adding courses: " + err);
              return res.status(400).json({error: 'Error in adding courses'})
         }
          console.log("Adding Courses Updated!");

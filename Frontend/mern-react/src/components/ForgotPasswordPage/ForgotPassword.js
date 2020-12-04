@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './ForgotPassword.css';
+import otLogo from '../../otLogo.png';
 const axios = require('axios');
 
 function ForgotPassword()
@@ -24,9 +25,9 @@ function ForgotPassword()
             axios.post('http://localhost:5000/auth/request-password', req)
             .then(function(resp) {
                 const status = resp.status; 
-                alert(status + ": Email Sent")
-                /*if(status == 200)
-                     window.location = '/HomePage';*/
+                //alert(status + ": Email Sent")
+                if(status == 200)
+                     window.location = '/SigninPage';
             })
                 .catch(err => {
                     console.log(err); 
@@ -43,6 +44,7 @@ function ForgotPassword()
 
     return (
         <div id="signinDiv">
+            <img class = "img-rounded" src = {otLogo} alt ="otLogo"/>    
             <form onSubmit={fp} id = "formID">
                 <span id="inner-title">Forgot Password</span><br />
                 <input type="email" id="signinEmail" placeholder="Type Email" ref={ (c) => signinEmail = c} /><br />
