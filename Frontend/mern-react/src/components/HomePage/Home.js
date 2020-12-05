@@ -105,7 +105,21 @@ function Home () {
     const profileProcess = async event =>
     {
         event.preventDefault();
-        window.location.href = "/ProfilePage"; 
+        
+      await  axios.get('http://localhost:5000/auth/profile', { headers: {Authorization: localStorage.getItem('jwtToken')}})
+        .then(function(resp) {
+            const { isStudent, isTutor } = resp.data;
+
+            if(isStudent == true) {
+                window.location.href = '/ProfilePage';
+            } 
+            if(isTutor == true) {
+                window.location.href = '/TutorProfilePage';
+            }
+        })
+            .catch(err => {
+                console.log(err); 
+            })
         //alert("Shmoovin to profile page");
     };
 

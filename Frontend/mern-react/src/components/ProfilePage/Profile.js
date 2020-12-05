@@ -56,7 +56,6 @@ function BringUpEdit()
     var temp = document.getElementById("setupForm").style.display ="none";
     var temp = document.getElementById("editClassForm").style.display ="inline-block";
     count = 0;
-
 }
 
 function BringUpPass()
@@ -75,18 +74,22 @@ function BacktoProfileClass()
 {
     var temp = document.getElementById("editClassForm").style.display ="none";
     var temp = document.getElementById("setupForm").style.display = "inline-block";
+    window.location.reload();
 }
 
 function BacktoProfilePass()
 {
     var temp = document.getElementById("editPassform").style.display ="none";
     var temp = document.getElementById("setupForm").style.display = "inline-block";
+    window.location.reload();
 }
 
 function BacktoProfileBio()
 {
     var temp = document.getElementById("editBioform").style.display ="none";
     var temp = document.getElementById("setupForm").style.display = "inline-block";
+    window.location.reload();
+
 }
 
 function addclasses()
@@ -139,8 +142,7 @@ const  submitnewPass = async event =>
     }
 }
 
-function submitNewClasses()
-{
+function submitNewClasses() {
     var courseArray = [];
 
     for (var i = 0; i<=count; i++) {
@@ -153,7 +155,7 @@ function submitNewClasses()
         count: count 
     }
 
-    axios.post('http://localhost:5000/auth/addCourses', req, { headers: {Authorization: localStorage.getItem('jwtToken')}})
+    axios.post('http://localhost:5000/auth/modifyCourses', req, { headers: {Authorization: localStorage.getItem('jwtToken')}})
        .then(function(resp) {
            console.log(resp);
            if(resp.status == 200) {
@@ -206,8 +208,8 @@ class Profile extends Component
                     <span id="topofForm">Account Information</span>
                     <br/>
                     <br/>
-                 <img class = "circular--square" src = {download} alt ="Download"/>    
-                    <br/>
+                 {/*<img class = "circular--square" src = {download} alt ="Download"/>    
+                    <br/>*/}
             
             
         <div id = "bottominfo">

@@ -32,7 +32,6 @@ function ScheduleBuilder()
     }
 
     const [value,setValue] = useState('');
-
     const [startDate,setStartDate] = useState(new Date());
     
     function submitBlock()
@@ -44,13 +43,25 @@ function ScheduleBuilder()
             return;
         }
 
-        let req = {
+        window.location = '/HomePage';
+        
+
+        /*let req = {
             count: count,
             timeArray: timeArray,
             dateArray: dateArray
         }
         
-        axios.post('http://localhost:5000/timeslot/add', req);
+        axios.post('http://localhost:5000/timeslot/add', req)
+            .then(function(resp) {
+                if(resp.status == 200) {
+                    window.location.href('/HomePage')
+                }
+            })
+            .catch(function(err) {
+                alert("Error in Schedule Builder: " + err); 
+                console.log("Error in Schedule Builder: " + err); 
+            })*/
         
     }
 
