@@ -3,15 +3,21 @@ const mongoose = require('mongoose');
 //**************** Appointment / Time slot Collection ***********************
 //*** defining schemas ********/
 const appointmentSchema = new mongoose.Schema({
-    class: String,
-    tutor: String,
-    student: String,
-    time: String,
-    rating : Number,
-    availability: {
+    course: String,
+    tutorName: String,
+    studentName: String,
+    time: Date,
+    studentEmail: String, 
+    tutorEmail: String, 
+    //rating : Number,
+    tutor: {
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Availability'
-    }, 
+        ref: 'User'
+    },
+    student: {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User'
+    },  
 });
 
 module.exports = mongoose.model('Appointment', appointmentSchema);

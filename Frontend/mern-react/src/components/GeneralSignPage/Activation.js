@@ -2,7 +2,6 @@ import React, {Component, useState } from 'react';
 import {useParams}  from "react-router-dom";
 import './GeneralSignup.css';
 import axios from "axios"; 
-import Cookies from "js-cookie"; 
 
 function Activation() {
     
@@ -35,7 +34,7 @@ function Activation() {
             }
         })
         .catch(err => {
-            alert(err); 
+            console.log(err);
         }) 
 
         axios.defaults.headers.common['Authorization'] = "Bearer " + localStorage.getItem('jwtToken');

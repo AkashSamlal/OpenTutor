@@ -37,7 +37,7 @@ function CourseSetup()
         return;
     };
 
-    function toUpper(x) {
+     function toUpper(x) {
         return x.toUpperCase();
     }; 
 
@@ -62,19 +62,24 @@ function CourseSetup()
             courseNumIndex++;
         }
         
-        //Assign count into the request
         req.count = count; 
 
-        //Start to merge the course codes and numbers into a string 
+        //alert(courseCode + " " + courseNum); 
+
+    
+        /*for(let i = 0; i < count; i++) {
+            req.courseCode.push(courseCode[i]);
+            req.courseNum.push(courseNum[i]);
+        }*/
+
         let courses = []; 
 
         for(let i = 0; i < count; i++) {
             courses[i] = courseCode[i]+ " " + courseNum[i];
         }
-        //Push it to Upper case
+  
         courses = courses.map(toUpper); 
 
-        //Assign the list of courses into the request 
         for(let i = 0; i < count; i++) {
             req.courses.push(courses[i]); 
         }
@@ -99,6 +104,7 @@ function CourseSetup()
                     <span id="inner-title">Course 1:
                         <input type="text" id="setuptextbox" placeholder="Subject Code" />
                         <input type="text" id="setuptextbox" placeholder="Course Number" />
+                        
                     </span>
                     <br />
                 </div>

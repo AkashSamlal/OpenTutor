@@ -3,7 +3,7 @@ import React from 'react';
 function PageTitle()
 {
     return(
-        <h1 id="title">Schedule Builder</h1>
+        <h1 id="title">Edit your Schedule</h1>
     );
 };
 
